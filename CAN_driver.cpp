@@ -95,7 +95,7 @@ void canRxHandlerTemplate(can_message_t *arg)
 {
   int i=0;
   if(CanBus.readMessage(&rx_msg)){
-    if(rx_msg.data[0]=R_PID_g){
+    if(rx_msg.data[0]==R_PID_g){
     
         for(i=0;i<8;i++)
         {

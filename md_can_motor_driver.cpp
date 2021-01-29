@@ -124,6 +124,9 @@ bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
   read_arr = CAN_read(PID_MONITOR2);  //왼쪽모터 = 2번모터일경우
   l_enc = Byte2Int32(read_arr[4],read_arr[5],read_arr[6],read_arr[7]);
 
+  left_value = l_enc;
+  right_value = r_enc;
+
   /*
   // Set parameter
   dxl_addparam_result = groupSyncReadEncoder_->addParam(left_wheel_id_);
