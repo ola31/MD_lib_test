@@ -36,16 +36,21 @@ uint32_t end_time=0;
 uint32_t diff_time=0;
 
 bool once = true;
-
+int count = 0;
+int flag = 0;
 uint8_t inv_sign_arr[8] = {PID_INV_SIGN_CMD,INV_ON,0,0,0,0,0,0};
 uint8_t inv_sign_arr2[8] = {PID_INV_SIGN_CMD2,INV_ON,0,0,0,0,0,0};
+//uint8_t aa[8] = {156,0,64,0,0,0,0,0};
+uint8_t aa[8] = {244,0,128,7,0,0,0,0};
+
+uint8_t posi_reset[8] = {13,0,0,0,0,0,0,0};
 
 sensor_msgs::Imu a;
 
 void setup() {
   // put your setup code here, to run once:
   
-  Serial.begin(2000000);
+  Serial.begin(115200);
   CAN_initialize();
 
 }
@@ -69,9 +74,10 @@ void loop() {
 
   //CAN_write(inv_sign_arr);  //모터1의 신호반전
   //CAN_write(inv_sign_arr2); //모터2의 신호반전   ->엔코더 신호도 반전되는지 확인
+  //if(flag==0){CAN_write(aa);flag=1;}
 
   bool WriteVel_result = motor_driver.writeVelocity(0,0); //입력축900rpm, 출력축30rpm(2초에 한 바퀴)
-
+/*
   // CAN_read 함수 테스트
   begin_time = micros();
   read_test = CAN_read(1);             
@@ -81,8 +87,8 @@ void loop() {
   
   //Serial.print("diff_time(read_test) : "); Serial.println(diff_time);
   //Serial.print("PID 1 : "); Serial.println(read_test[1]);
-
-
+*/
+/*
   // readEncoder 함수 테스트
   begin_time = micros();
   enc_test = motor_driver.readEncoder(l_enc_test,r_enc_test);
@@ -91,13 +97,43 @@ void loop() {
   diff_time = end_time-begin_time;
   Serial.print("diff_time(enc) : "); Serial.println(diff_time);
   Serial.print("left_tick : "); Serial.print(l_enc_test); Serial.print("right_tick : "); Serial.println(r_enc_test);
-
+  */
+/*
   // md_can_sensor 테스트
   a=sensor.getIMU();
   a.angular_velocity.z;
   Serial.print("ang_vel : "); Serial.println(a.angular_velocity.z);
   
   //Serial.println("===============================================");
-  delayMicroseconds(5000); //delay 5 msec
+*/
 
+  //PID 156번 확인(엔코더세팅)
+  //if(once == true){
+  //Serial.println("ddd");
+  read_test = CAN_read(196);   //196 156
+  //Serial.println("ddd");
+ // int16_t value = LHByte2Int16(read_test[1],read_test[2]);
+  //int16_t value = read_test[1];
+  int32_t value = Byte2Int32(read_test[4],read_test[5],read_test[6],read_test[7]);
+  //int32_t value = Byte2Int32(read_test[1],read_test[2],read_test[3],read_test[4]);
+  delayMicroseconds(1000);
+  Serial.println("PID196 : ");  
+  Serial.println(read_test[0]);
+  Serial.println(read_test[1]);
+  Serial.println(read_test[2]);
+  Serial.println(read_test[3]);
+  Serial.println(read_test[4]);
+  Serial.println(read_test[5]);
+  Serial.println(read_test[6]);
+  Serial.println(read_test[7]);Serial.println(value);
+  //if(count>10){once = false;}
+  //count++;
+  //}
+  
+  
+  
+  delayMicroseconds(5000);
+  //CAN_write(posi_reset);
+  //delay 5 msec
+//  bl9l 400W 16384, 740 25
 }
