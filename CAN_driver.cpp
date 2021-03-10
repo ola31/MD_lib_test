@@ -16,7 +16,7 @@ uint8_t R_PID_g;  //R_PID를 저장하는 전역변수 선언
  **************************************/
 void CAN_initialize(void)
 {
-  if (CanBus.begin(CAN_BAUD_500K, CAN_EXT_FORMAT) == false)           
+  if (CanBus.begin(CAN_BAUD_250K, CAN_EXT_FORMAT) == false)           
   {Serial.println("CAN open fail!!");}
  
   else{
@@ -104,7 +104,7 @@ void canRxHandlerTemplate(can_message_t *arg)
           //Serial.println("CAN_read");
         }     
     
-        CanBus.detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 해제한다.
+        //CanBus.detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 해제한다.
         interupt_on=false;
         //Serial.println("CAN_read_done");
 

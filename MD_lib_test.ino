@@ -76,7 +76,7 @@ void loop() {
   //CAN_write(inv_sign_arr2); //모터2의 신호반전   ->엔코더 신호도 반전되는지 확인
   //if(flag==0){CAN_write(aa);flag=1;}
 
-  bool WriteVel_result = motor_driver.writeVelocity(0,0); //입력축900rpm, 출력축30rpm(2초에 한 바퀴)
+  bool WriteVel_result = motor_driver.writeVelocity(30,30); //입력축900rpm, 출력축30rpm(2초에 한 바퀴)
 /*
   // CAN_read 함수 테스트
   begin_time = micros();
@@ -132,7 +132,7 @@ void loop() {
   
   
   
-  delayMicroseconds(5000);
+  delayMicroseconds(500000);
   //CAN_write(posi_reset);
   //delay 5 msec
 //  bl9l 400W 16384, 740 25
