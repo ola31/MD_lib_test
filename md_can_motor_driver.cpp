@@ -110,6 +110,7 @@ void DrokMdMotorDriver::close(void)  //토크 off 외에 특별한 기능 없음
  *********************************/
 bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
 {
+  uint32_t b_time = micros();
   /*int dxl_comm_result = COMM_TX_FAIL;              // Communication result
   bool dxl_addparam_result = false;                // addParam result
   bool dxl_getdata_result = false;                 // GetParam result*/
@@ -118,10 +119,10 @@ bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
   int32_t l_enc;
   uint8_t* read_arr = NULL;
   
-  read_arr = CAN_read(PID_MONITOR);   //오른쪽모터 = 1번모터일경우
+  read_arr = CAN_read_loop(PID_MONITOR);   //오른쪽모터 = 1번모터일경우
   r_enc = Byte2Int32(read_arr[4],read_arr[5],read_arr[6],read_arr[7]);
   
-  read_arr = CAN_read(PID_MONITOR2);  //왼쪽모터 = 2번모터일경우
+  read_arr = CAN_read_loop(PID_MONITOR2);  //왼쪽모터 = 2번모터일경우
   l_enc = Byte2Int32(read_arr[4],read_arr[5],read_arr[6],read_arr[7]);
 
   left_value = l_enc;
@@ -162,6 +163,10 @@ bool DrokMdMotorDriver::readEncoder(int32_t &left_value, int32_t &right_value)
   right_value = groupSyncReadEncoder_->getData(right_wheel_id_, ADDR_X_PRESENT_POSITION, LEN_X_PRESENT_POSITION);
 
   groupSyncReadEncoder_->clearParam();*/
+  uint32_t e_time = micros();
+
+  uint32_t diff_time = e_time-b_time;
+  Serial.print("diff_time(read_enc) : "); Serial.println(diff_time);Serial.println(" ");
   return true;
 }
 

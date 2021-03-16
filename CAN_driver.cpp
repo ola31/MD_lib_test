@@ -74,13 +74,15 @@ uint8_t* CAN_read(uint8_t R_PID)
 {
   //R_PID : 값을읽어오고자하는 MD_450T의 PID(파라미터 id)
 
-  interupt_on=false;
+  //interupt_on=false;
   R_PID_g=R_PID;                                        //전역변수 R_PID_g에 R_PID를 저장
   //uint8_t CAN_recieved[8]={0,0,0,0,0,0,0,0};
   uint8_t arr_[8]={PID_REQ_PID_DATA,R_PID,0,0,0,0,0,0};
-  
+
+
   CanBus.attachRxInterrupt(canRxHandlerTemplate);       //CAN rx신호를 인터럽트 신호로 등록한다. 
-  interupt_on=true;
+  //interupt_on=true;
+
   CAN_write(arr_);
 
  // while(interupt_on){                //interupt_on == true라면 아직까지 CAN_read_arr가 업데이트 되지 못한 것.
@@ -91,13 +93,40 @@ uint8_t* CAN_read(uint8_t R_PID)
 }
 
 
+uint8_t* CAN_read_loop(uint8_t R_PID)
+{
+  R_PID_g=R_PID;
+  uint8_t arr_[8]={PID_REQ_PID_DATA,R_PID,0,0,0,0,0,0};
+  
+  int i=0;
+  CAN_write(arr_);
+
+  while(1){
+    if(CanBus.readMessage(&rx_msg)){
+  
+
+    if(rx_msg.data[0]==R_PID_g){ 
+   
+        for(i=0;i<8;i++)
+        {
+          CAN_read_arr[i]=rx_msg.data[i];
+        }     
+        break;
+    }
+  }
+}
+return CAN_read_arr;  
+}
+
 void canRxHandlerTemplate(can_message_t *arg)
 {
+  Serial.println(11);
   int i=0;
   if(CanBus.readMessage(&rx_msg)){
   
+
     if(arg->data[0]==R_PID_g){ 
-    
+   
         for(i=0;i<8;i++)
         {
           CAN_read_arr[i]=arg->data[i];
@@ -105,12 +134,12 @@ void canRxHandlerTemplate(can_message_t *arg)
         }     
     
         //CanBus.detachRxInterrupt();  //리턴메시지를 수신하면 인터럽트를 해제한다.
-        interupt_on=false;
+        //interupt_on=false;
         //Serial.println("CAN_read_done");
-
-       
+        //break;
     }
   }
+
         
 }
 /**********************************************************
@@ -137,5 +166,5 @@ int16_t LHByte2Int16(uint8_t low, uint8_t high)
  ***********************************************************/
 int32_t Byte2Int32(uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
 {
-  return ((int32_t)d4 | (int32_t)d5<<8 | (int32_t)d6<<16 | (int32_t)d7<<32);
+  return ((int32_t)d4 | (int32_t)d5<<8 | (int32_t)d6<<16 | (int32_t)d7<<24);
 }

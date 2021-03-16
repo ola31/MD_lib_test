@@ -45,6 +45,7 @@ void CAN_initialize(void);
 void CAN_write(uint8_t* Arr);
 void CAN_recieve(void);
 uint8_t* CAN_read(uint8_t R_PID);
+uint8_t* CAN_read_loop(uint8_t R_PID);
 void canRxHandlerTemplate(can_message_t *arg);
 //uint8_t CAN_recieved[8];//={0,0,0,0,0,0,0,0};
 //bool interupt_on;

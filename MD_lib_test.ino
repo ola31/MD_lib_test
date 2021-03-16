@@ -52,10 +52,12 @@ void setup() {
   
   Serial.begin(115200);
   CAN_initialize();
+  CAN_write(posi_reset);
 
 }
 
 void loop() {
+  begin_time = micros();
 /*
   if(once){
   for(int i=167;i<170;i++)
@@ -76,7 +78,7 @@ void loop() {
   //CAN_write(inv_sign_arr2); //모터2의 신호반전   ->엔코더 신호도 반전되는지 확인
   //if(flag==0){CAN_write(aa);flag=1;}
 
-  bool WriteVel_result = motor_driver.writeVelocity(30,30); //입력축900rpm, 출력축30rpm(2초에 한 바퀴)
+  bool WriteVel_result = motor_driver.writeVelocity(100,-100); //입력축900rpm, 출력축30rpm(2초에 한 바퀴)
 /*
   // CAN_read 함수 테스트
   begin_time = micros();
@@ -88,16 +90,16 @@ void loop() {
   //Serial.print("diff_time(read_test) : "); Serial.println(diff_time);
   //Serial.print("PID 1 : "); Serial.println(read_test[1]);
 */
-/*
+
   // readEncoder 함수 테스트
-  begin_time = micros();
+  //begin_time = micros();
   enc_test = motor_driver.readEncoder(l_enc_test,r_enc_test);
-  end_time = micros();
+  //end_time = micros();
   
-  diff_time = end_time-begin_time;
-  Serial.print("diff_time(enc) : "); Serial.println(diff_time);
+  //diff_time = end_time-begin_time;
+  //Serial.print("diff_time(enc) : "); Serial.println(diff_time);
   Serial.print("left_tick : "); Serial.print(l_enc_test); Serial.print("right_tick : "); Serial.println(r_enc_test);
-  */
+
 /*
   // md_can_sensor 테스트
   a=sensor.getIMU();
@@ -110,12 +112,13 @@ void loop() {
   //PID 156번 확인(엔코더세팅)
   //if(once == true){
   //Serial.println("ddd");
-  read_test = CAN_read(196);   //196 156
+  //read_test = CAN_read_loop(196);   //196 156
   //Serial.println("ddd");
  // int16_t value = LHByte2Int16(read_test[1],read_test[2]);
   //int16_t value = read_test[1];
-  int32_t value = Byte2Int32(read_test[4],read_test[5],read_test[6],read_test[7]);
+  //int32_t value = Byte2Int32(read_test[4],read_test[5],read_test[6],read_test[7]);
   //int32_t value = Byte2Int32(read_test[1],read_test[2],read_test[3],read_test[4]);
+  /*
   delayMicroseconds(1000);
   Serial.println("PID196 : ");  
   Serial.println(read_test[0]);
@@ -129,11 +132,15 @@ void loop() {
   //if(count>10){once = false;}
   //count++;
   //}
-  
-  
-  
-  delayMicroseconds(500000);
+  Serial.println(value);
+  */
+  //Serial.println(value);
+  //Serial.println(22);
+  //delayMicroseconds(50000);
   //CAN_write(posi_reset);
   //delay 5 msec
 //  bl9l 400W 16384, 740 25
+end_time = micros();
+diff_time = end_time-begin_time;
+Serial.print("diff_time(loop) : "); Serial.println(diff_time);
 }
